@@ -1,41 +1,35 @@
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
-const PORT = process.env.PORT || 8080;
+import express from "express";
+import expressGraphQL from "express-graphql";
+import mongoose, { Query } from "mongoose";
+import bodyParser from "body-parser";
+import cors from "cors";
+
+import schema from "../graphql";
+
 const app = express();
+const PORT = process.env.PORT || "4000";
+const db = "mongodb://testing:test123@ds213255.mlab.com:13255/capstone";
 
-const createApp = () => {
-  app.use(morgan('dev'));
-
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-
-  app.use('/api', require('./api'));
-
-  app.use((req, res, next) => {
-    if (path.extname(req.path).length) {
-      const err = new Error('Not found');
-      err.status = 404;
-      next(err);
-    } else {
-      next();
+// Connect to MongoDB with Mongoose.
+mongoose
+  .connect(
+    db,
+    {
+      useCreateIndex: true,
+      useNewUrlParser: true
     }
-  });
+  )
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(err));
 
-  app.use((err, req, res, next) => {
-    console.error(err);
-    console.error(err.stack);
-    res.status(err.status || 500).send(err.message || 'Internal server error.');
-  });
-};
+app.use(
+  "/graphql",
+  cors(),
+  bodyParser.json(),
+  expressGraphQL({
+    schema,
+    graphiql: true
+  })
+);
 
-const startListening = () => {
-  app.listen(PORT, () => console.log(`Mixing it up on port ${PORT}`));
-};
-
-async function bootApp() {
-  await createApp();
-  await startListening();
-}
-
-bootApp();
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

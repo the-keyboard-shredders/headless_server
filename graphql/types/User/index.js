@@ -1,6 +1,6 @@
 export default `
   type User {
-    id: String!
+    id: ID!
     name: String!
     email: String!
   }
@@ -9,7 +9,7 @@ export default `
     users: [User]
   }
   type Mutation {
-    addUser(id: String!, name: String!, email: String!): User
+    addUser(name: String!, email: String!): User
     editUser(id: String, name: String, email: String): User
     deleteUser(id: String, name: String, email: String): User
   }
