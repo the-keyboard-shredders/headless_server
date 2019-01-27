@@ -4,8 +4,8 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "nodemon main",
-    "server": "nodemon --exec babel-node main"
+    "start": "nodemon server/index.js",
+    "server": "nodemon --exec babel-node server/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "express-graphql": "^0.7.1",
     "graphql": "^14.1.1",
     "graphql-tools": "^4.0.4",
+    "lodash": "^4.17.11",
     "merge-graphql-schemas": "^1.5.8",
     "mongoose": "^5.4.6",
     "morgan": "^1.9.1",
