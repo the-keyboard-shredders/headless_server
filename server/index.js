@@ -7,7 +7,7 @@ import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || '4000';
 
-const db = PROD_MONGODB || require('../secrets');
+const db = process.env.MONGODB_URI || require('../secrets');
 
 const schema = require('./schema/schema');
 
