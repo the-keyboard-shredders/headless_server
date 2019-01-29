@@ -21,7 +21,7 @@ const ArticleType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        return Article.findById(parent.userId);
+        return User.find({ email: parent.userEmail });
       }
     }
   })
@@ -36,7 +36,7 @@ const UserType = new GraphQLObjectType({
     articles: {
       type: new GraphQLList(ArticleType),
       resolve(parent, args) {
-        return Article.find({ userId: parent.id });
+        return Article.find({ userEmail: parent.email });
       }
     }
   })
@@ -60,9 +60,9 @@ const RootQuery = new GraphQLObjectType({
     },
     user: {
       type: UserType,
-      args: { id: { type: GraphQLID } },
+      args: { email: { type: GraphQLString } },
       resolve(parent, args) {
-        return User.findById(args.id);
+        return User.find({ email: args.email });
       }
     },
     users: {
@@ -96,13 +96,13 @@ const Mutation = new GraphQLObjectType({
       args: {
         title: { type: GraphQLString },
         content: { type: GraphQLString },
-        userId: { type: GraphQLID }
+        userEmail: { type: GraphQLString }
       },
       resolve(parent, args) {
         let article = new Article({
           title: args.title,
           content: args.content,
-          userId: args.userId
+          userEmail: args.userEmail
         });
         return article.save();
       }
