@@ -15,14 +15,24 @@ const schema = require('./schema/schema');
 // allow cross origin requests
 // app.use(cors());
 
-// Connect to MongoDB with Mongoose.
 mongoose
   .connect(db)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
+function isAuthenticated(req, res, next) {
+  // do any checks you want to in here
+  // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
+  // you can do this however you want with whatever variables you set up
+  if (req.user.authenticated) return next();
+
+  // IF A USER ISN'T LOGGED IN, THEN REDIRECT THEM SOMEWHERE
+  res.send('not authenticated');
+}
+
 app.use(
   '/',
+  isAuthenticated,
   cors(),
   bodyParser.json(),
   expressGraphQL({
@@ -30,13 +40,5 @@ app.use(
     graphiql: false
   })
 );
-
-// app.use(
-//   '/',
-//   graphqlHTTP({
-//     schema,
-//     graphiql: true
-//   })
-// );
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
