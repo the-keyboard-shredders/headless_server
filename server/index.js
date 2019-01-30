@@ -48,7 +48,7 @@ app.use(
   bodyParser.json(),
   expressGraphQL({
     schema,
-    graphiql: true
+    graphiql: false
   })
 );
 
