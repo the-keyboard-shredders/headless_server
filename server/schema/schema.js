@@ -15,9 +15,10 @@ const User = require('../models/user');
 const ArticleType = new GraphQLObjectType({
   name: 'Article',
   fields: () => ({
-    id: { type: GraphQLID },
-    title: { type: GraphQLString },
-    content: { type: GraphQLString },
+    id: {type: GraphQLID},
+    url: {type: GraphQLString},
+    title: {type: GraphQLString},
+    content: {type: GraphQLString},
     user: {
       type: UserType,
       resolve(parent, args) {
@@ -30,13 +31,15 @@ const ArticleType = new GraphQLObjectType({
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-    email: { type: GraphQLString },
+    id: {type: GraphQLID},
+    name: {type: GraphQLString},
+    email: {type: GraphQLString},
+    thumbnail: {type: GraphQLString},
+    googleId: {type: GraphQLString},
     articles: {
       type: new GraphQLList(ArticleType),
       resolve(parent, args) {
-        return Article.find({ userEmail: parent.email });
+        return Article.find({userId: parent.id});
       }
     }
   })
@@ -47,7 +50,7 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     article: {
       type: ArticleType,
-      args: { id: { type: GraphQLID } },
+      args: {id: {type: GraphQLID}},
       resolve(parent, args) {
         return Article.findById(args.id);
       }
@@ -60,15 +63,9 @@ const RootQuery = new GraphQLObjectType({
     },
     user: {
       type: UserType,
-      args: { email: { type: GraphQLString } },
+      args: {id: {type: GraphQLID}},
       resolve(parent, args) {
-        return User.find({ email: args.email });
-      }
-    },
-    users: {
-      type: new GraphQLList(UserType),
-      resolve(parent, args) {
-        return User.find({});
+        return User.findById(args.id);
       }
     }
   }
@@ -77,32 +74,35 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    addUser: {
-      type: UserType,
-      args: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type: new GraphQLNonNull(GraphQLString) }
-      },
-      resolve(parent, args) {
-        let user = new User({
-          name: args.name,
-          email: args.email
-        });
-        return user.save();
-      }
-    },
+    //not currently using addUser, please note this and maybe delete later
+    // addUser: {
+    //   type: UserType,
+    //   args: {
+    //     name: {type: new GraphQLNonNull(GraphQLString)},
+    //     email: {type: new GraphQLNonNull(GraphQLString)}
+    //   },
+    //   resolve(parent, args) {
+    //     let user = new User({
+    //       name: args.name,
+    //       email: args.email
+    //     });
+    //     return user.save();
+    //   }
+    // },
     addArticle: {
       type: ArticleType,
       args: {
-        title: { type: GraphQLString },
-        content: { type: GraphQLString },
-        userEmail: { type: GraphQLString }
+        url: {type: GraphQLString},
+        title: {type: GraphQLString},
+        content: {type: GraphQLString},
+        userId: {type: GraphQLID}
       },
       resolve(parent, args) {
         let article = new Article({
+          url: args.url,
           title: args.title,
           content: args.content,
-          userEmail: args.userEmail
+          userId: args.userId
         });
         return article.save();
       }

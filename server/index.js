@@ -3,26 +3,47 @@ const expressGraphQL = require('express-graphql');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { Query } = mongoose;
+const cookieSession = require('cookie-session');
+const passport = require('passport');
+// const { Query } = mongoose;
+
+const schema = require('./schema/schema');
+const authRoutes = require('./routes/auth');
+const passportSetup = require('./passport/passport-setup');
+const secrets = require('../secrets');
 
 const app = express();
 const PORT = process.env.PORT || '4000';
+const db = process.env.MONGODB_URI || secrets.mongodb.dbURI;
 
-const db = process.env.MONGODB_URI || require('../secrets');
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [secrets.session.cookieKey]
+  })
+);
 
-const schema = require('./schema/schema');
+app.use(passport.initialize());
+app.use(passport.session());
 
-// allow cross origin requests
-// app.use(cors());
-
-// Connect to MongoDB with Mongoose.
 mongoose
   .connect(db)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
+app.use('/auth', authRoutes);
+
+const authCheck = (req, res, next) => {
+  if (!req.user) {
+    res.redirect('/auth/login');
+  } else {
+    next();
+  }
+};
+
 app.use(
   '/',
+  authCheck,
   cors(),
   bodyParser.json(),
   expressGraphQL({
@@ -30,13 +51,5 @@ app.use(
     graphiql: true
   })
 );
-
-// app.use(
-//   '/',
-//   graphqlHTTP({
-//     schema,
-//     graphiql: true
-//   })
-// );
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
