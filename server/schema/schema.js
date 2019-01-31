@@ -22,7 +22,7 @@ const ArticleType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        return User.find({ email: parent.userEmail });
+        return User.find({email: parent.userEmail});
       }
     }
   })
@@ -92,17 +92,17 @@ const Mutation = new GraphQLObjectType({
     addArticle: {
       type: ArticleType,
       args: {
+        userId: {type: GraphQLString},
         url: {type: GraphQLString},
         title: {type: GraphQLString},
-        content: {type: GraphQLString},
-        userId: {type: GraphQLID}
+        content: {type: GraphQLString}
       },
       resolve(parent, args) {
         let article = new Article({
+          userId: args.userId,
           url: args.url,
           title: args.title,
-          content: args.content,
-          userId: args.userId
+          content: args.content
         });
         return article.save();
       }

@@ -6,12 +6,21 @@ const passport = require('passport');
 router.get(
   '/login',
   passport.authenticate('google', {
-    scope: ['profile', 'email']
+    scope: ['email']
   })
 );
 
+router.get('/me', (req, res, next) => {
+  if (!req.user) {
+    res.redirect('/auth/login');
+  } else {
+    res.send(req.user.id);
+  }
+});
+
 router.get('/logout', (req, res, next) => {
   req.logout();
+  req.session = null;
   res.redirect('/');
 });
 

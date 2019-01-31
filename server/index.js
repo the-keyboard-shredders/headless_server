@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
-// const { Query } = mongoose;
-
 const schema = require('./schema/schema');
 const authRoutes = require('./routes/auth');
 const passportSetup = require('./passport/passport-setup');
