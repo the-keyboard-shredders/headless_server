@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const articleSchema = new Schema({
-  userId: String,
+  googleId: String,
   url: String,
   title: String,
   content: String

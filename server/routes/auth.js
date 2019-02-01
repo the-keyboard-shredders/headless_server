@@ -19,7 +19,7 @@ const authCheck = (req, res, next) => {
 };
 
 router.get('/me', authCheck, (req, res, next) => {
-  res.send(req.user.id);
+  res.send(req.user.googleId);
 });
 
 router.get('/loggedin', authCheck, (req, res, next) => {
