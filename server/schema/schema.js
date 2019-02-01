@@ -22,7 +22,7 @@ const ArticleType = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parent, args) {
-        return User.find({ googleId: parent.userId });
+        return User.find({ googleId: parent.googleId });
       }
     }
   })
