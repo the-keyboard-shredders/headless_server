@@ -10,12 +10,20 @@ router.get(
   })
 );
 
-router.get('/me', (req, res, next) => {
+const authCheck = (req, res, next) => {
   if (!req.user) {
     res.redirect('/auth/login');
   } else {
-    res.send(req.user.id);
+    next();
   }
+};
+
+router.get('/me', authCheck, (req, res, next) => {
+  res.send(req.user.id);
+});
+
+router.get('/loggedin', authCheck, (req, res, next) => {
+  res.send('You have successfully logged in!');
 });
 
 router.get('/logout', (req, res, next) => {
@@ -28,7 +36,7 @@ router.get(
   '/google/redirect',
   passport.authenticate('google'),
   (req, res, next) => {
-    res.redirect('/');
+    res.redirect('/auth/loggedin');
   }
 );
 
