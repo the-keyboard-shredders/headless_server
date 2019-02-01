@@ -15,14 +15,14 @@ const User = require('../models/user');
 const ArticleType = new GraphQLObjectType({
   name: 'Article',
   fields: () => ({
-    id: {type: GraphQLID},
-    url: {type: GraphQLString},
-    title: {type: GraphQLString},
-    content: {type: GraphQLString},
+    id: { type: GraphQLID },
+    url: { type: GraphQLString },
+    title: { type: GraphQLString },
+    content: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parent, args) {
-        return User.find({email: parent.userEmail});
+        return User.find({ googleId: parent.userId });
       }
     }
   })
@@ -31,15 +31,15 @@ const ArticleType = new GraphQLObjectType({
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: {type: GraphQLID},
-    name: {type: GraphQLString},
-    email: {type: GraphQLString},
-    thumbnail: {type: GraphQLString},
-    googleId: {type: GraphQLString},
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    thumbnail: { type: GraphQLString },
+    googleId: { type: GraphQLString },
     articles: {
       type: new GraphQLList(ArticleType),
       resolve(parent, args) {
-        return Article.find({userId: parent.id});
+        return Article.find({ userId: parent.googleId });
       }
     }
   })
@@ -50,7 +50,7 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     article: {
       type: ArticleType,
-      args: {id: {type: GraphQLID}},
+      args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return Article.findById(args.id);
       }
@@ -61,11 +61,18 @@ const RootQuery = new GraphQLObjectType({
         return Article.find({});
       }
     },
+    userArticles: {
+      type: new GraphQLList(ArticleType),
+      args: { googleId: { type: GraphQLString } },
+      resolve(parent, args) {
+        return Article.find({ userId: args.googleId });
+      }
+    },
     user: {
       type: UserType,
-      args: {id: {type: GraphQLID}},
+      args: { googleId: { type: GraphQLString } },
       resolve(parent, args) {
-        return User.findById(args.id);
+        return User.find({ googleId: args.googleId });
       }
     }
   }
@@ -92,10 +99,10 @@ const Mutation = new GraphQLObjectType({
     addArticle: {
       type: ArticleType,
       args: {
-        userId: {type: GraphQLString},
-        url: {type: GraphQLString},
-        title: {type: GraphQLString},
-        content: {type: GraphQLString}
+        userId: { type: new GraphQLNonNull(GraphQLString) },
+        url: { type: new GraphQLNonNull(GraphQLString) },
+        title: { type: new GraphQLNonNull(GraphQLString) },
+        content: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve(parent, args) {
         let article = new Article({
