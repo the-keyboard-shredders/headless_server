@@ -27,9 +27,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public/googlec83ee420d92a4c50.html'))
-})
+
 
 mongoose
   .connect(db)
@@ -56,5 +54,7 @@ app.use(
     graphiql: false
   })
 );
-
+app.use('/googlec83ee420d92a4c50.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public/googlec83ee420d92a4c50.html'))
+})
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
