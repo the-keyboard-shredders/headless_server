@@ -21,7 +21,7 @@ const db = process.env.MONGODB_URI || secrets.MONGODB_URI;
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [secrets.cookieKey]
+    keys: [process.env.SESSION_KEY || secrets.cookieKey]
   })
 );
 
