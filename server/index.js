@@ -9,16 +9,18 @@ const passport = require('passport');
 const schema = require('./schema/schema');
 const authRoutes = require('./routes/auth');
 const passportSetup = require('./passport/passport-setup');
-const secrets = require('../secrets');
-
 const app = express();
 const PORT = process.env.PORT || '4000';
+
+if (process.env.NODE_ENV !== 'production') {
+  const secrets = require('../secrets');
+}
 const db = process.env.MONGODB_URI || secrets.mongodb.dbURI;
 
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [secrets.session.cookieKey]
+    keys: process.env.SESSION_KEY || secrets.session.cookieKey
   })
 );
 
