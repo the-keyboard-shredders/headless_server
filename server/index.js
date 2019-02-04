@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const expressGraphQL = require('express-graphql');
 const mongoose = require('mongoose');
@@ -23,6 +24,10 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/googlec83ee420d92a4c50.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public/index.html'))
+})
 
 mongoose
   .connect(db)
