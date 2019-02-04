@@ -12,16 +12,14 @@ const passportSetup = require('./passport/passport-setup');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// if (process.env.NODE_ENV !== 'production') {
-const secrets = require('../secrets') || '';
-// }
+if (process.env.NODE_ENV !== 'production') require('../secrets')
 
-const db = process.env.MONGODB_URI || secrets.MONGODB_URI;
+const db = process.env.MONGODB_URI;
 
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.SESSION_KEY || secrets.cookieKey]
+    keys: [process.env.SESSION_KEY]
   })
 );
 
@@ -32,7 +30,9 @@ app.use(passport.session());
 
 mongoose
   .connect(db, { useNewUrlParser: true })
-  .then(() => console.log('MongoDB connected'))
+  .then(() => {
+    console.log('MongoDB connected')
+  })
   .catch(err => console.log(err));
 
 app.use('/auth', authRoutes);
