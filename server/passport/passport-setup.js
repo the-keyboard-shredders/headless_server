@@ -2,9 +2,9 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 
 const User = require('../models/user');
-if (process.env.NODE_ENV !== 'production') {
-  const secrets = require('../secrets');
-}
+// if (process.env.NODE_ENV !== 'production') {
+const secrets = require('../../secrets') || '';
+// }
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

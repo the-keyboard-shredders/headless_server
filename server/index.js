@@ -11,6 +11,11 @@ const authRoutes = require('./routes/auth');
 const passportSetup = require('./passport/passport-setup');
 const app = express();
 const PORT = process.env.PORT || '4000';
+
+// if (process.env.NODE_ENV !== 'production') {
+const secrets = require('../secrets') || '';
+// }
+
 const db = process.env.MONGODB_URI || secrets.MONGODB_URI;
 
 app.use(
@@ -26,7 +31,7 @@ app.use(passport.session());
 
 
 mongoose
-  .connect(db)
+  .connect(db, { useNewUrlParser: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
