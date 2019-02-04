@@ -12,12 +12,12 @@ const secrets = require('../secrets');
 
 const app = express();
 const PORT = process.env.PORT || '4000';
-const db = process.env.MONGODB_URI || secrets.mongodb.dbURI;
+const db = process.env.MONGODB_URI || secrets.MONGODB_URI;
 
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [secrets.session.cookieKey]
+    keys: [secrets.cookieKey]
   })
 );
 
