@@ -47,7 +47,7 @@ const authCheck = (req, res, next) => {
 
 app.use(
   '/',
-  authCheck,
+  // authCheck,
   cors(),
   bodyParser.json(),
   expressGraphQL({
