@@ -2,7 +2,8 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 
 const User = require('../models/user');
-const secrets = require('../../secrets');
+
+if (process.env.NODE_ENV !== 'production') require('../../secrets')
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -17,13 +18,13 @@ passport.deserializeUser((id, done) => {
 passport.use(
   new GoogleStrategy(
     {
-      callbackURL: process.env.callbackUrl || secrets.google.callbackURL,
-      clientID: process.env.GOOGLE_CLIENTID || secrets.google.clientID,
+      callbackURL: process.env.callbackURL,
+      clientID: process.env.GOOGLE_CLIENTID,
       clientSecret:
-        process.env.GOOGLE_CLIENTSECRET || secrets.google.clientSecret
+        process.env.GOOGLE_CLIENTSECRET
     },
     (accessToken, refreshToken, profile, done) => {
-      User.findOne({googleId: profile.id}).then(currentUser => {
+      User.findOne({ googleId: profile.id }).then(currentUser => {
         if (currentUser) {
           done(null, currentUser);
         } else {
