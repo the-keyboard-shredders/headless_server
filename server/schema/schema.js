@@ -68,34 +68,12 @@ const RootQuery = new GraphQLObjectType({
         return Article.find({ googleId: args.googleId });
       }
     },
-    // user: {
-    //   type: UserType,
-    //   args: { googleId: { type: GraphQLString } },
-    //   resolve(parent, args) {
-    //     return User.find({ googleId: args.googleId });
-    //   }
-    // }
   }
 });
 
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    //not currently using addUser, please note this and maybe delete later
-    // addUser: {
-    //   type: UserType,
-    //   args: {
-    //     name: {type: new GraphQLNonNull(GraphQLString)},
-    //     email: {type: new GraphQLNonNull(GraphQLString)}
-    //   },
-    //   resolve(parent, args) {
-    //     let user = new User({
-    //       name: args.name,
-    //       email: args.email
-    //     });
-    //     return user.save();
-    //   }
-    // },
     addArticle: {
       type: ArticleType,
       args: {
@@ -112,6 +90,19 @@ const Mutation = new GraphQLObjectType({
           content: args.content
         });
         return article.save();
+      }
+    },
+    deleteArticle: {
+      type: ArticleType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      async resolve(parent, args) {
+        try {
+          await Article.deleteOne({ "_id": args.id })
+        } catch (err) {
+          console.log(err)
+        }
       }
     }
   }

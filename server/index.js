@@ -52,7 +52,7 @@ app.use(
   bodyParser.json(),
   expressGraphQL({
     schema,
-    graphiql: false
+    graphiql: true
   })
 );
 app.use('/googlec83ee420d92a4c50.html', (req, res) => {
