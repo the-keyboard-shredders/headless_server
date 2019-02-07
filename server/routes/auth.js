@@ -29,7 +29,7 @@ router.get('/loggedin', authCheck, (req, res, next) => {
 router.get('/logout', (req, res, next) => {
   req.logout();
   req.session = null;
-  res.redirect('/');
+  res.redirect('/auth/login');
 });
 
 router.get(
